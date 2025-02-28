@@ -20,4 +20,3 @@ The Robot Usage Tracker is a web application designed to track and visualize the
 - **JavaScript**: Used for client-side scripting and form validation.
 - **HTML/CSS**: Used for structuring and styling the web pages.
 
-![image](https://github.com/user-attachments/assets/0656291e-a573-4f24-9abf-1b5ea51516ab)
