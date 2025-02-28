@@ -1,0 +1,13 @@
+# Ignore specific file extensions
+*.db
+*.csv
+*.log
+*.out
+*.xlsx
+*.rdb
+*.ppk
+
+# Ignore specific files/directories
+RobotTracker
+__pycache__/
+temp/

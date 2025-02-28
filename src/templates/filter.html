@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Usage Tracker</title>
+    <script src="/static/scripts.js"></script>
+    <script src="/static/bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/chart.js"></script>
+</head>
+<body>
+    <div class="container-fluid text-bg-dark" style="height:50px;">
+        <a id="top">
+            <h2 class="text-center my-0">Freshdesk Robot Usage Tracker</h2>
+        </a>
+    </div>
+    <div class="container pt-1 pb-1">
+        <div class="row">
+            <div class="col-sm d-flex justify-content-center align-items-center">
+                <a href="/" class="me-2"> 
+                    <img src="/static/home.png" title="Click to return to homepage" alt="Picture of home icon" style="width:42px;height:42px;" class="rounded mx-auto d-block"> 
+                </a>
+                {% if chart_paths %}
+                    <a href="javascript:void(0);" onclick="downloadCSV()" class="ms-2">
+                        <img src="/static/download.png" title="Click to download source data" alt="Picture of download icon" style="width:42px;height:42px;" class="rounded mx-auto d-block">    
+                    </a>  
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="container d-flex flex-column justify-content-center align-items-center">
+            {% if chart_paths %}
+                <div class="container-fluid bg-dark text-white">
+                    <h1>Charts</h1>
+                    {% for chart_path in chart_paths %}
+                        <img src="{{ chart_path }}" alt="Chart" style="width: 100%; height: auto;">
+                        <hr>    
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="col-sm d-flex justify-content-center align-items-center pt-1 pb-1">
+                        <a href="#top" class="mt-auto">
+                            <img src="static/backtotop.png" title="Click here to go back to top of page." style="width:42px;height:42px;">
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+            
+    </div>
+</body>
+</html>

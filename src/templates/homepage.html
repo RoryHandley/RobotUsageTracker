@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Robot Usage Tracker</title>
+    <link rel="icon" type="image/x-icon" href="/static/Robotfavicon.png">
+    <script src="/static/scripts.js"></script>
+    <script src="/static/bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container-fluid text-bg-dark p-0" style="height:50px;">
+        <h2 class="text-center my-0">Freshdesk Robot Usage Tracker</h2>
+    </div>
+    <div class="container-fluid p-0">
+        <form id="combinedForm" action="/filter_{{ user_id }}" method="post" onsubmit="return checkAgentsSelected()">
+            <div class="row" style="margin: auto">
+                <!-- Date Range Column -->
+                <div class="col-sm-3 border border-secondary p-0 rounded">
+                    <h2 class="text-center bg-secondary text-white border border-white rounded py-2">1. Pick a Date Range</h2>
+                    <div class="row">
+                        <div class="col-sm d-flex flex-column align-items-center border-end border-secondary">
+                            <h5>Default Ranges</h5>
+                            <div class="d-grid gap-2 btn-toolbar" role="toolbar" data-toggle="buttons">
+                                <input type="radio" class="btn-check" name="dateoption" id="dateoption2" autocomplete="off" onclick="setYesterday()">
+                                <label class="btn btn-primary" for="dateoption2">Yesterday</label>
+                                <input type="radio" class="btn-check" name="dateoption" id="dateoption3" autocomplete="off" onclick="setThisWeek()">
+                                <label class="btn btn-primary" for="dateoption3">This week</label>
+                                <input type="radio" class="btn-check" name="dateoption" id="dateoption4" autocomplete="off" onclick="setLastWeek()">
+                                <label class="btn btn-primary" for="dateoption4">Last week</label>
+                                <input type="radio" class="btn-check" name="dateoption" id="dateoption5" autocomplete="off" onclick="setLastMonth()">
+                                <label class="btn btn-primary" for="dateoption5">Last month</label>
+                                <input type="radio" class="btn-check" name="dateoption" id="dateoption6" autocomplete="off" onclick="setLastThreeMonths()">
+                                <label class="btn btn-primary" for="dateoption6">Last 3 months</label>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <h5>Custom Ranges</h5>
+                            <label for="startdate">Start Date</label>
+                            <input type="date" id="startdatelabel" name="startdate" title="Default:Current Date"><br>
+                            <label for="starttime">Start Time (UTC)</label>
+                            <input type="time" id="starttimelabel" name="starttime" title="Default:00:00"><br>
+                            <br>
+                            <label for="enddate">End Date</label>
+                            <input type="date" id="enddatelabel" name="enddate" title="Default:Current Date"><br>
+                            <label for="endtime">End Time (UTC)</label>
+                            <input type="time" id="endtimelabel" name="endtime" title="Default:23:59"><br>
+                        </div>
+                    </div>
+                </div>
+                <!-- Agent Filter Column -->
+                <div class="col-sm-6 border border-secondary rounded p-0">
+                    <h2 class="text-center bg-secondary text-white border border-white rounded py-2">2. Filter by Agent(s)</h2>
+                    <div class="row m-0">
+                        {% for manager, employees in teams_hierarchy.items() %}
+                            <div class="col-md p-0 text-center">
+                                <div class="p-2">
+                                    <label for="{{ manager | replace(' ', '') }}CheckAll" style="font-weight: bold;"> {{ manager }} Team </label>
+                                    <input type="checkbox" id="{{ manager | replace(' ', '') }}CheckAll" onclick="toggleTeamCheckboxes('{{ manager }}')"><br>
+                                    {% for employee in employees %}
+                                        <label for="{{ manager | replace(' ', '') }}{{ loop.index }}"> {{ employee }} </label>
+                                        <input type="checkbox" id="{{ manager | replace(' ', '') }}{{ loop.index }}" name="agent" value="{{ employee }}" class="{{ manager }}"><br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-2">
+                        <label for="checkAll">Select All</label>
+                        <input type="checkbox" id="checkAll" onclick="toggleCheckboxes(this)">
+                    </div>
+                </div>
+                <!-- Email Subscription -->
+                <div class="col-sm-3 border border-secondary p-0 rounded text-center">
+                    <h2 class="bg-secondary text-white border border-white rounded py-2">3. Email Subscription</h2>
+                    <br>
+                    <label for="email-opt-in">Opt in to weekly emails?</label>
+                    <input type="checkbox" id="email-opt-in" name="email-opt-in" onclick="showEmailOptions({{ valid_domains}})"></input>
+                    <br><br>
+                    <div class="row">
+                        <div class="col-sm m-2" id="email-col" style="display:none;">
+                            <br>
+                            <p>
+                                <b> You have chosen to opt-in to the email subscription. Please select configuration options from below.</b>
+                                <i> (Note agents for email subscription are based on currently select entries in web form) </i>
+                            <p>
+                            <br>
+                            <label for="email-address" id="email-label"> Email Address: </label>
+                            <input type="email" id="email-address" name="email-address"></input>
+                            <br><br>
+                            <input type="radio" class="btn-check" name="recurrence" id="recurrenceoption1" value="daily" autocomplete="off">
+                            <label class="btn btn-primary" for="recurrenceoption1">Daily Reports</label>
+                            <input type="radio" class="btn-check" name="recurrence" id="recurrenceoption2" value="weekly" autocomplete="off">
+                            <label class="btn btn-primary" for="recurrenceoption2">Weekly Reports</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-end">
+                <div class="col-sm-4 align-content-center text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                <div class="col-sm-4 align-content-center">
+                    <a href="mailto:roryhandley96@gmail.com?subject='Robot Usage Tracker Feedback'" class="d-flex">
+                        <img src="static/feedback.png" title="Click to send feedback!" alt="Clickable Image"  class="ms-auto"style="width:10%;">
+                    </a>
+                </div>
+            </div> 
+        </form>
+    </div>
+</body>
+</html>

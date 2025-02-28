@@ -1,0 +1,12 @@
+{"Teams":
+    {
+    "Manager1":["Man1Age1", "Man1Age2",
+                "Man1Age3", "Man1Age4"],
+    "Manager2":["Man2Age1", "Man2Age2",
+                "Man2Age3", "Man2Age4"]
+    },
+"valid_domains":["outlook.com"],
+"shifts_times":{"shift_start":2, "timezone":"GMT"}, 
+"database_years_to_keep":2
+}
+
